@@ -33,10 +33,11 @@
       to { opacity: 0; transform: translate(-50%, -50%) scale(2.8); }
     }
     @keyframes rage-flash { to { opacity: 0; } }
-    @keyframes rage-duel-left { 50% { transform: translateX(34px) rotate(4deg) scale(1.05); } }
-    @keyframes rage-duel-right { 50% { transform: translateX(-34px) rotate(-4deg) scale(1.05); } }
-    @keyframes rage-duel-hit { 35% { transform: translateX(16px) rotate(8deg); filter: brightness(1.8); } }
-    @keyframes rage-duel-impact { to { opacity: 0; transform: translate(-50%, -85%) scale(2.1) rotate(25deg); } }
+    @keyframes rage-brawl-punch-left { 50% { transform: translateX(58px) rotate(10deg); } }
+    @keyframes rage-brawl-punch-right { 50% { transform: translateX(-58px) rotate(-10deg); } }
+    @keyframes rage-brawl-hit { 25% { transform: translateX(16px) rotate(12deg); filter: brightness(2); } 65% { transform: translateX(-12px) rotate(-8deg); } }
+    @keyframes rage-brawl-win { 50% { transform: translateY(-24px) rotate(-8deg); } }
+    @keyframes rage-brawl-impact { to { opacity: 0; transform: translate(-50%, -90%) scale(2); } }
     .${prefix}damaged {
       animation: rage-fall 520ms cubic-bezier(.15,.7,.3,1) forwards !important;
       pointer-events: none !important;
@@ -79,46 +80,43 @@
     .${prefix}selected { outline: 4px solid #ff914d !important; outline-offset: 5px !important; }
     #${prefix}arena {
       position: fixed !important; inset: 0 !important; z-index: 2147483647 !important;
-      display: grid !important; place-items: center !important; padding: 20px !important;
-      background: radial-gradient(circle at center, #49201bf5, #100d12f8 75%) !important;
-      color: white !important; font-family: system-ui,sans-serif !important;
+      overflow: hidden !important; background: transparent !important;
+      color: white !important; font-family: system-ui,sans-serif !important; pointer-events: none !important;
     }
     #${prefix}arena * { box-sizing: border-box !important; }
-    #${prefix}arena .${prefix}battle-box { width: min(900px, 100%) !important; text-align: center !important; }
-    #${prefix}arena .${prefix}battle-title { margin: 0 0 12px !important; font: 900 clamp(32px,6vw,60px)/1 system-ui,sans-serif !important; color: #ffae72 !important; }
-    #${prefix}arena .${prefix}battle-status { min-height: 34px !important; margin: 0 0 22px !important; font: 700 20px system-ui,sans-serif !important; }
-    #${prefix}arena .${prefix}battle-stage { display: flex !important; justify-content: center !important; align-items: center !important; gap: 20px !important; }
-    #${prefix}arena .${prefix}fighter {
-      position: relative !important; width: min(39vw,340px) !important; min-width: 180px !important;
-      padding: 14px !important; border: 3px solid #ff8553 !important; border-radius: 19px !important;
-      background: #fff !important; color: #1c1520 !important; box-shadow: 0 20px 50px #0009 !important;
+    #${prefix}arena .${prefix}battle-head { position: absolute !important; top: 78px !important; right: 18px !important; max-width: 360px !important; padding: 11px 15px !important; border: 1px solid #ff8855 !important; border-radius: 12px !important; background: #171316ed !important; text-align: center !important; z-index: 3 !important; }
+    #${prefix}arena .${prefix}battle-title { margin: 0 0 5px !important; font: 900 20px/1 system-ui,sans-serif !important; color: #ffae72 !important; }
+    #${prefix}arena .${prefix}battle-status { margin: 0 !important; font: 700 13px/1.3 system-ui,sans-serif !important; }
+    #${prefix}arena .${prefix}person {
+      position: absolute !important; z-index: 2 !important; background: var(--rage-bar-color) !important;
+      transition: left 850ms cubic-bezier(.2,.8,.2,1), top 850ms cubic-bezier(.2,.8,.2,1),
+        width 850ms, height 850ms, border-radius 850ms !important;
+      box-shadow: 0 0 0 2px #ffffff50 !important;
     }
-    #${prefix}arena .${prefix}fighter.right { border-color: #7bd5ff !important; }
-    #${prefix}arena .${prefix}fighter.attack.left { animation: rage-duel-left 480ms ease-in-out !important; }
-    #${prefix}arena .${prefix}fighter.attack.right { animation: rage-duel-right 480ms ease-in-out !important; }
-    #${prefix}arena .${prefix}fighter.hit { animation: rage-duel-hit 480ms ease-in-out !important; }
-    #${prefix}arena .${prefix}fighter.knockout { opacity: .35 !important; transform: rotate(12deg) translateY(35px) !important; }
-    #${prefix}arena .${prefix}fighter.winner { box-shadow: 0 0 0 5px #ffd068, 0 20px 50px #0009 !important; }
-    #${prefix}arena .${prefix}fighter-name { min-height: 46px !important; font: 800 17px/1.2 system-ui,sans-serif !important; overflow: hidden !important; }
-    #${prefix}arena .${prefix}health { height: 11px !important; overflow: hidden !important; border-radius: 99px !important; background: #ddd !important; margin: 8px 0 14px !important; }
-    #${prefix}arena .${prefix}health > span { display: block !important; width: 100%; height: 100%; background: #ff7446 !important; transition: width 360ms !important; }
-    #${prefix}arena .${prefix}fighter.right .${prefix}health > span { background: #3fb9eb !important; }
-    #${prefix}arena .${prefix}preview { position: relative !important; display: grid !important; place-items: center !important; height: 160px !important; overflow: hidden !important; background: #fff !important; }
-    #${prefix}arena .${prefix}preview > svg, #${prefix}arena .${prefix}preview > canvas { max-width: 100% !important; max-height: 100% !important; }
-    #${prefix}arena .${prefix}preview-bars { display: flex !important; align-items: end !important; gap: 8px !important; width: 100% !important; height: 100% !important; padding: 15px !important; }
-    #${prefix}arena .${prefix}preview-bars > i { flex: 1 !important; height: var(--rage-bar-height) !important; background: linear-gradient(#ffb36b,#ff623e) !important; border-radius: 5px 5px 0 0 !important; }
-    #${prefix}arena .${prefix}fighter.right .${prefix}preview-bars > i { background: linear-gradient(#9ae1ff,#419de0) !important; }
-    #${prefix}arena .${prefix}fists { margin-top: 8px !important; font-size: 32px !important; }
-    #${prefix}arena .${prefix}versus { font: 900 clamp(30px,5vw,56px) system-ui,sans-serif !important; color: #ffda8f !important; }
-    #${prefix}arena .${prefix}battle-impact { position: absolute !important; top: 35% !important; left: 50% !important; z-index: 1 !important; font-size: 50px !important; transform: translate(-50%,-50%) !important; animation: rage-duel-impact 500ms ease-out forwards !important; }
-    #${prefix}arena .${prefix}battle-controls { display: flex !important; justify-content: center !important; gap: 10px !important; margin-top: 26px !important; }
+    #${prefix}arena .${prefix}person.human { width: 29px !important; height: 66px !important; border-radius: 9px !important; }
+    #${prefix}arena .${prefix}person.team-0.human { box-shadow: 0 0 0 3px #ffab65, 0 0 20px #ff7045aa !important; }
+    #${prefix}arena .${prefix}person.team-1.human { box-shadow: 0 0 0 3px #83ddff, 0 0 20px #46c2ffaa !important; }
+    #${prefix}arena .${prefix}person span { position: absolute !important; opacity: 0 !important; transition: opacity 300ms 560ms !important; }
+    #${prefix}arena .${prefix}person.human span { opacity: 1 !important; }
+    #${prefix}arena .${prefix}head { left: 1px !important; top: -27px !important; width: 27px !important; height: 27px !important; border-radius: 50% !important; background: #ffd1a1 !important; text-align: center !important; font: 15px/26px system-ui,sans-serif !important; color: #2b1a1b !important; }
+    #${prefix}arena .${prefix}arm { top: 9px !important; width: 27px !important; height: 8px !important; background: var(--rage-bar-color) !important; border-radius: 99px !important; }
+    #${prefix}arena .${prefix}arm.left { left: -23px !important; transform: rotate(28deg) !important; }
+    #${prefix}arena .${prefix}arm.right { right: -23px !important; transform: rotate(-28deg) !important; }
+    #${prefix}arena .${prefix}arm::after { content: '🥊' !important; position: absolute !important; top: -11px !important; font-size: 19px !important; }
+    #${prefix}arena .${prefix}arm.left::after { left: -9px !important; }
+    #${prefix}arena .${prefix}arm.right::after { right: -9px !important; }
+    #${prefix}arena .${prefix}leg { bottom: -24px !important; width: 9px !important; height: 30px !important; background: #242128 !important; border-radius: 0 0 6px 6px !important; }
+    #${prefix}arena .${prefix}leg.left { left: 2px !important; transform: rotate(12deg) !important; }
+    #${prefix}arena .${prefix}leg.right { right: 2px !important; transform: rotate(-12deg) !important; }
+    #${prefix}arena .${prefix}person.punch.team-0 { animation: rage-brawl-punch-left 440ms ease-in-out !important; }
+    #${prefix}arena .${prefix}person.punch.team-1 { animation: rage-brawl-punch-right 440ms ease-in-out !important; }
+    #${prefix}arena .${prefix}person.hit { animation: rage-brawl-hit 440ms ease-in-out !important; }
+    #${prefix}arena .${prefix}person.ko { transform: rotate(83deg) translateY(40px) !important; opacity: .35 !important; }
+    #${prefix}arena .${prefix}person.win { animation: rage-brawl-win 650ms ease-in-out infinite !important; }
+    #${prefix}arena .${prefix}battle-impact { position: absolute !important; z-index: 4 !important; font-size: 48px !important; transform: translate(-50%,-50%) !important; animation: rage-brawl-impact 550ms ease-out forwards !important; }
+    #${prefix}arena .${prefix}battle-controls { position: absolute !important; bottom: 18px !important; right: 18px !important; display: flex !important; gap: 10px !important; z-index: 4 !important; pointer-events: auto !important; }
     #${prefix}arena button { cursor: pointer !important; border: 1px solid #ffb083 !important; border-radius: 9px !important; background: #3b2727 !important; color: white !important; padding: 10px 16px !important; font: 700 14px system-ui,sans-serif !important; }
     #${prefix}arena button:hover { background: #744033 !important; }
-    @media (max-width: 560px) {
-      #${prefix}arena .${prefix}battle-stage { gap: 6px !important; }
-      #${prefix}arena .${prefix}fighter { min-width: 0 !important; width: 44vw !important; padding: 7px !important; }
-      #${prefix}arena .${prefix}preview { height: 110px !important; }
-    }
   `;
   document.head.append(style);
 
@@ -128,7 +126,7 @@
     <span>💥 RAGE MODE</span>
     <button type="button" data-weapon="pistol" aria-pressed="true">🔫 Pistole · 1</button>
     <button type="button" data-weapon="bazooka" aria-pressed="false">🚀 Bazooka · 2</button>
-    <button type="button" data-weapon="battle" aria-pressed="false">📊 Graph-Fight · 3</button>
+    <button type="button" data-weapon="battle" aria-pressed="false">🥊 Balken-Brawl · 3</button>
     <button type="button" data-action="restore">↶ Reset · R</button>
     <button type="button" data-action="exit">×</button>
     <small id="${prefix}hint">Esc beendet</small>
@@ -235,64 +233,54 @@
     return 'Graph ' + number;
   }
 
-  function chartPreview(source) {
-    const preview = document.createElement('div');
-    preview.className = prefix + 'preview';
-    const graphics = source.matches('svg,canvas') ? [source] :
-      Array.from(source.querySelectorAll('svg,canvas'));
-    const graphic = graphics
-      .filter(node => {
-        const rect = node.getBoundingClientRect();
-        return rect.width >= 120 && rect.height >= 70;
-      })
-      .sort((a, b) => {
-        const aRect = a.getBoundingClientRect();
-        const bRect = b.getBoundingClientRect();
-        return bRect.width * bRect.height - aRect.width * aRect.height;
-      })[0];
-    if (graphic?.tagName.toLowerCase() === 'svg') {
-      const copy = graphic.cloneNode(true);
-      copy.style.width = '100%';
-      copy.style.height = '100%';
-      preview.append(copy);
-    } else if (graphic?.tagName.toLowerCase() === 'canvas') {
-      const copy = document.createElement('canvas');
-      copy.width = 480;
-      copy.height = 220;
-      try { copy.getContext('2d').drawImage(graphic, 0, 0, copy.width, copy.height); }
-      catch { /* Some embedded charts prohibit pixel copying. */ }
-      preview.append(copy);
-    } else if (source.textContent.length < 2500) {
-      const rect = source.getBoundingClientRect();
-      const copy = source.cloneNode(true);
-      const scale = Math.min(320 / rect.width, 160 / rect.height, 1);
-      copy.style.position = 'absolute';
-      copy.style.left = '0';
-      copy.style.top = '0';
-      copy.style.width = rect.width + 'px';
-      copy.style.height = rect.height + 'px';
-      copy.style.transformOrigin = 'top left';
-      copy.style.transform = 'scale(' + scale + ')';
-      copy.style.pointerEvents = 'none';
-      preview.append(copy);
-    } else {
-      const bars = document.createElement('div');
-      bars.className = prefix + 'preview-bars';
-      for (let i = 0; i < 7; i++) {
-        const bar = document.createElement('i');
-        bar.style.setProperty('--rage-bar-height', (25 + Math.random() * 70) + '%');
-        bars.append(bar);
-      }
-      preview.append(bars);
+  function extractBars(source) {
+    const chartRect = source.getBoundingClientRect();
+    const nodes = Array.from(source.querySelectorAll('rect,div,span')).slice(0, 1400);
+    const candidates = [];
+    for (const element of nodes) {
+      const rect = element.getBoundingClientRect();
+      if (rect.width < 5 || rect.width > 95 || rect.height < 18 ||
+          rect.height > Math.min(500, chartRect.height) || rect.height < rect.width * 1.15 ||
+          rect.right < 0 || rect.left > innerWidth || rect.bottom < 0 || rect.top > innerHeight) continue;
+      const computed = getComputedStyle(element);
+      if (computed.visibility === 'hidden' || computed.opacity === '0') continue;
+      const svg = element.localName === 'rect';
+      const color = svg ? computed.fill : computed.backgroundColor;
+      if (!color || color === 'none' || color === 'transparent' || color === 'rgba(0, 0, 0, 0)') continue;
+      candidates.push({element, rect, color});
     }
-    return preview;
+    candidates.sort((a, b) => b.rect.height - a.rect.height);
+    const bars = [];
+    for (const candidate of candidates) {
+      const center = candidate.rect.left + candidate.rect.width / 2;
+      if (bars.some(bar => Math.abs(center - bar.rect.left - bar.rect.width / 2) < 14)) continue;
+      bars.push(candidate);
+      if (bars.length === 3) break;
+    }
+    if (bars.length) return bars.sort((a, b) => a.rect.left - b.rect.left);
+    // Canvas charts do not expose individual bars, so place stand-ins over the plotted area.
+    const graphic = source.matches('canvas,svg') ? source : source.querySelector('canvas,svg');
+    const rect = graphic?.getBoundingClientRect() || chartRect;
+    const height = Math.min(130, rect.height * .55);
+    return [0, 1, 2].map((i) => ({
+      element: null,
+      rect: {left: rect.left + rect.width * (.25 + i * .24), top: rect.bottom - height * (1 + i * .12),
+        width: Math.min(27, rect.width * .055), height: height * (1 + i * .12)},
+      color: '#ff754c'
+    }));
   }
 
   function closeBattle() {
     battleToken++;
     arena?.remove();
     arena = null;
-    for (const chart of selectedCharts) chart.element.classList.remove(prefix + 'selected');
+    for (const chart of selectedCharts) {
+      chart.element.classList.remove(prefix + 'selected');
+      for (const bar of chart.bars) {
+        if (bar.originalOpacity) putStyleBack(bar.element, 'opacity', bar.originalOpacity);
+        bar.originalOpacity = null;
+      }
+    }
     selectedCharts.length = 0;
     if (active && weapon === 'battle') {
       hud.querySelector('#' + prefix + 'hint').textContent = 'Zwei Graphen anklicken';
@@ -311,7 +299,7 @@
     const chart = {
       element,
       label: chartLabel(element, selectedCharts.length + 1),
-      preview: chartPreview(element)
+      bars: extractBars(element)
     };
     selectedCharts.push(chart);
     element.classList.add(prefix + 'selected');
@@ -319,81 +307,110 @@
     if (selectedCharts.length === 2) openBattle();
   }
 
-  function fighter(chart, side) {
-    const card = document.createElement('div');
-    card.className = prefix + 'fighter ' + side;
-    card.innerHTML = `<div class="${prefix}fighter-name"></div><div class="${prefix}health"><span></span></div><div class="${prefix}fists">🥊</div>`;
-    card.querySelector('.' + prefix + 'fighter-name').textContent = chart.label;
-    card.insertBefore(chart.preview, card.querySelector('.' + prefix + 'fists'));
-    return card;
+  function barPerson(bar, team) {
+    const node = document.createElement('div');
+    node.className = prefix + 'person team-' + team;
+    node.style.setProperty('--rage-bar-color', bar.color);
+    node.style.left = bar.rect.left + 'px';
+    node.style.top = bar.rect.top + 'px';
+    node.style.width = bar.rect.width + 'px';
+    node.style.height = bar.rect.height + 'px';
+    node.innerHTML = `<span class="${prefix}head">${team ? '😠' : '😎'}</span>
+      <span class="${prefix}arm left"></span><span class="${prefix}arm right"></span>
+      <span class="${prefix}leg left"></span><span class="${prefix}leg right"></span>`;
+    return node;
   }
 
   function openBattle() {
     arena = document.createElement('div');
     arena.id = prefix + 'arena';
-    arena.setAttribute('role', 'dialog');
-    arena.setAttribute('aria-modal', 'true');
-    arena.setAttribute('aria-label', 'Graphen-Kampf');
-    arena.innerHTML = `<div class="${prefix}battle-box">
-      <h2 class="${prefix}battle-title">📊 GRAPH-FIGHT</h2>
-      <p class="${prefix}battle-status">Die Graphen betreten die Arena …</p>
-      <div class="${prefix}battle-stage"><span class="${prefix}versus">VS</span></div>
+    arena.setAttribute('aria-label', 'Balken-Kampf auf der Seite');
+    arena.innerHTML = `<div class="${prefix}battle-head">
+      <h2 class="${prefix}battle-title">🥊 BALKEN-BRAWL</h2>
+      <p class="${prefix}battle-status">Die Balken verwandeln sich …</p>
+    </div>
       <div class="${prefix}battle-controls">
         <button type="button" data-battle="again">Nochmal kämpfen</button>
-        <button type="button" data-battle="close">Zurück zur Seite</button>
-      </div>
-    </div>`;
-    const stage = arena.querySelector('.' + prefix + 'battle-stage');
-    stage.prepend(fighter(selectedCharts[0], 'left'));
-    stage.append(fighter(selectedCharts[1], 'right'));
+        <button type="button" data-battle="close">Balken zurücksetzen</button>
+      </div>`;
+    const chartRects = selectedCharts.map(chart => chart.element.getBoundingClientRect());
+    const midpoint = Math.max(125, Math.min(innerWidth - 125,
+      (chartRects[0].left + chartRects[0].width / 2 + chartRects[1].left + chartRects[1].width / 2) / 2));
+    const fightY = Math.max(185, Math.min(innerHeight - 105,
+      (chartRects[0].top + chartRects[0].height / 2 + chartRects[1].top + chartRects[1].height / 2) / 2));
+    const teams = selectedCharts.map((chart, team) => chart.bars.map((bar, index) => {
+      const node = barPerson(bar, team);
+      arena.append(node);
+      return {node, targetX: midpoint + (team ? 54 : -83) + (team ? 1 : -1) * index * 36,
+        targetY: fightY - 45 + (index % 2) * 52};
+    }));
     arena.addEventListener('click', event => {
       const action = event.target.closest('button')?.dataset.battle;
       if (action === 'close') closeBattle();
-      else if (action === 'again') runBattle();
+      else if (action === 'again') runBattle(teams, true);
     });
     document.body.append(arena);
-    runBattle();
+    for (const chart of selectedCharts) for (const bar of chart.bars) {
+      if (bar.element) {
+        bar.originalOpacity = rememberStyle(bar.element, 'opacity');
+        bar.element.style.setProperty('opacity', '0', 'important');
+      }
+    }
+    const battleArena = arena;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      if (arena !== battleArena) return;
+      for (const team of teams) for (const fighter of team) {
+        fighter.node.classList.add('human');
+        fighter.node.style.left = fighter.targetX + 'px';
+        fighter.node.style.top = fighter.targetY + 'px';
+      }
+      later(() => { if (arena === battleArena) runBattle(teams); }, 1050);
+    }));
   }
 
-  function runBattle() {
+  function runBattle(teams, replay = false) {
     if (!arena) return;
     const token = ++battleToken;
-    const cards = Array.from(arena.querySelectorAll('.' + prefix + 'fighter'));
-    const bars = cards.map(card => card.querySelector('.' + prefix + 'health > span'));
     const status = arena.querySelector('.' + prefix + 'battle-status');
-    const health = [100, 100];
+    const health = [4, 4];
     let turn = 0;
-    cards.forEach(card => card.classList.remove('winner', 'knockout', 'attack', 'hit'));
-    bars.forEach(bar => { bar.style.width = '100%'; });
-    status.textContent = '3 … 2 … 1 … KAMPF!';
+    for (const team of teams) for (const fighter of team) {
+      fighter.node.classList.remove('win', 'ko', 'punch', 'hit');
+      fighter.node.style.left = fighter.targetX + 'px';
+      fighter.node.style.top = fighter.targetY + 'px';
+    }
+    status.textContent = replay ? 'Revanche! 🥊' : 'Die Balken kämpfen direkt im Diagramm!';
     function step() {
       if (!arena || token !== battleToken) return;
-      if (turn >= 8 || health[0] <= 0 || health[1] <= 0) {
+      if (turn >= 7 || health[0] <= 0 || health[1] <= 0) {
         const winner = health[0] === health[1] ? Math.floor(Math.random() * 2) :
           (health[0] > health[1] ? 0 : 1);
-        cards[winner].classList.add('winner');
-        cards[1 - winner].classList.add('knockout');
+        teams[winner].forEach(fighter => fighter.node.classList.add('win'));
+        teams[1 - winner].forEach(fighter => fighter.node.classList.add('ko'));
         status.textContent = '🏆 ' + selectedCharts[winner].label + ' gewinnt!';
         return;
       }
       const attacker = turn % 2;
       const defender = 1 - attacker;
-      health[defender] = Math.max(0, health[defender] - 14 - Math.floor(Math.random() * 18));
-      bars[defender].style.width = health[defender] + '%';
-      cards.forEach(card => card.classList.remove('attack', 'hit'));
-      void cards[attacker].offsetWidth;
-      cards[attacker].classList.add('attack');
-      cards[defender].classList.add('hit');
+      health[defender] -= 1;
+      const striker = teams[attacker][turn % teams[attacker].length].node;
+      const victim = teams[defender][turn % teams[defender].length].node;
+      for (const team of teams) for (const fighter of team) fighter.node.classList.remove('punch', 'hit');
+      void striker.offsetWidth;
+      striker.classList.add('punch');
+      victim.classList.add('hit');
       const impact = document.createElement('span');
       impact.className = prefix + 'battle-impact';
       impact.textContent = '💥';
-      cards[defender].append(impact);
+      impact.style.left = (parseFloat(victim.style.left) + 15) + 'px';
+      impact.style.top = (parseFloat(victim.style.top) + 15) + 'px';
+      arena.append(impact);
       status.textContent = selectedCharts[attacker].label + ' landet einen Treffer!';
       later(() => impact.remove(), 550);
       turn++;
-      later(step, 650);
+      later(step, 730);
     }
-    later(step, 700);
+    later(step, replay ? 450 : 300);
   }
 
   function rememberStyle(element, name) {
